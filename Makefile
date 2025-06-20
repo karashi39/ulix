@@ -6,3 +6,6 @@ gui:
 
 cmd:
 	@PYTHONPATH=. uv run python app/main.py ${ARG}
+
+format:
+	uv run mypy app
