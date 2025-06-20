@@ -1,7 +1,7 @@
 import sys
 from enum import StrEnum
 
-from app.repositories import delete_all, create_node
+from app.repositories import *
 from app.graphdb import exec_cypher
 
 
@@ -13,12 +13,14 @@ def main(option:str) -> None:
         exec_cypher(delete_all)
         return
 
+    mermaid_id = 1
     nodes = [
-        {"node_name": "A", "display_name": "Node A", "mermaid_id": 1},
-        {"node_name": "B", "display_name": "Node B", "mermaid_id": 1},
+        {"node_name": "A", "display_name": "Node A"},
+        {"node_name": "B", "display_name": "Node B"},
     ]
     for node in nodes:
-        exec_cypher(create_node, node["display_name"], node["node_name"], node["mermaid_id"])
+        exec_cypher(create_node, node["display_name"], node["node_name"], mermaid_id)
+    exec_cypher(create_link, "A", "B", mermaid_id)
     print("Nodes created!")
 
 
