@@ -9,4 +9,5 @@ cmd:
 
 format:
 	uv run ruff format app
+	uv run ruff check app --fix --show-fixes
 	uv run mypy app
