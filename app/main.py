@@ -1,7 +1,7 @@
 import sys
 from enum import StrEnum
 
-from app.repositories import *
+from app.repositories import delete_all, create_link, create_node
 from app.graphdb import exec_cypher
 
 
