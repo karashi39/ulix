@@ -8,6 +8,7 @@ cmd:
 	@PYTHONPATH=. uv run python app/main.py ${ARG}
 
 format:
+	uv run init-file-checker --add-missing app/
 	uv run ruff format app
 	uv run ruff check app --fix --show-fixes
 	uv run mypy app

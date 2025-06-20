@@ -3,6 +3,15 @@ revision = 2
 requires-python = ">=3.12"
 
 [[package]]
+name = "init-file-checker"
+version = "0.0.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/93/33/040f9031af19227cef69f61601669772e8accfe51b1a4be0aca30b272c50/init_file_checker-0.0.2.tar.gz", hash = "sha256:d46d472159407aad6d730be35414fb16a6266a00be270ed50a43bccfa6d3419e", size = 5054, upload-time = "2024-01-24T17:27:58.994Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/21/21/45fc0ff1dc641ed26bf0f47bcc7f1a6bc46c8efcc7e71bc13975784b480c/init_file_checker-0.0.2-py3-none-any.whl", hash = "sha256:7355ac9968749e65b91b9900e4ed7ed38eda667ad8f8890825eb26cb7966bc84", size = 5150, upload-time = "2024-01-24T17:27:57.356Z" },
+]
+
+[[package]]
 name = "mypy"
 version = "1.16.1"
 source = { registry = "https://pypi.org/simple" }
@@ -106,6 +115,7 @@ name = "ulix"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "init-file-checker" },
     { name = "mypy" },
     { name = "neo4j" },
     { name = "ruff" },
@@ -113,6 +123,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "init-file-checker", specifier = ">=0.0.2" },
     { name = "mypy", specifier = ">=1.16.1" },
     { name = "neo4j", specifier = ">=5.28.1" },
     { name = "ruff", specifier = ">=0.12.0" },
