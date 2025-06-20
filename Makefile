@@ -8,4 +8,5 @@ cmd:
 	@PYTHONPATH=. uv run python app/main.py ${ARG}
 
 format:
+	uv run ruff format app
 	uv run mypy app
