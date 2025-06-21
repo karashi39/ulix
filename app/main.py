@@ -3,6 +3,7 @@ from enum import StrEnum
 
 from app.repositories import delete_all, create_link, create_node
 from app.graphdb import exec_cypher
+from app.models import Node, Link
 
 
 class Option(StrEnum):
@@ -15,13 +16,17 @@ def main(option: str) -> None:
         return
 
     mermaid_id = 1
-    nodes = [
-        {"node_name": "A", "display_name": "Node A"},
-        {"node_name": "B", "display_name": "Node B"},
+    nodes = {
+        "A": Node(mermaid_id=mermaid_id, name="A", display_name="Node A"),
+        "B": Node(mermaid_id=mermaid_id, name="B", display_name="Node B"),
+    }
+    links = [
+        Link(from_=nodes["A"], to=nodes["B"]),
     ]
-    for node in nodes:
-        exec_cypher(create_node, node["display_name"], node["node_name"], mermaid_id)
-    exec_cypher(create_link, "A", "B", mermaid_id)
+    for node in nodes.values():
+        exec_cypher(create_node, node)
+    for link in links:
+        exec_cypher(create_link, link)
     print("Nodes created!")
 
 

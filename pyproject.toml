@@ -8,5 +8,6 @@ dependencies = [
     "init-file-checker>=0.0.2",
     "mypy>=1.16.1",
     "neo4j>=5.28.1",
+    "pydantic>=2.11.7",
     "ruff>=0.12.0",
 ]

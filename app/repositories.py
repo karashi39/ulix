@@ -1,15 +1,21 @@
-def create_node(tx, display_name, node_name, mermaid_id):
+from app.models import Node, Link
+
+
+def create_node(tx, node: Node):
     query = """
     MERGE (n:Node {node_name: $node_name, mermaid_id: $mermaid_id})
     SET n.name = $display_name
     """
     result = tx.run(
-        query, node_name=node_name, display_name=display_name, mermaid_id=mermaid_id
+        query,
+        node_name=node.name,
+        display_name=node.display_name,
+        mermaid_id=node.mermaid_id,
     )
     return result.single()
 
 
-def create_link(tx, from_node, to_node, mermaid_id, label=None):
+def create_link(tx, link: Link):
     query = """
     MATCH (a:Node {node_name: $from_node, mermaid_id: $mermaid_id})
     MATCH (b:Node {node_name: $to_node, mermaid_id: $mermaid_id})
@@ -18,7 +24,11 @@ def create_link(tx, from_node, to_node, mermaid_id, label=None):
     RETURN r
     """
     result = tx.run(
-        query, from_node=from_node, to_node=to_node, mermaid_id=mermaid_id, label=label
+        query,
+        from_node=link.from_.name,
+        to_node=link.to.name,
+        mermaid_id=link.to.mermaid_id,
+        label=link.label,
     )
     return result.single()
 
