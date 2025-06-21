@@ -8,6 +8,7 @@ from app.mermaid import Mermaid
 
 
 class Option(StrEnum):
+    TEST_DATA = "test-data"
     DELETE_ALL = "delete-all"
     DUMP = "dump"
 
@@ -26,7 +27,7 @@ def create_testdata(session, chart_id: int) -> None:
 
 def dump(session, chart_id: int) -> None:
     links = Repo.select(session, chart_id)
-    Mermaid.dump(links)
+    Mermaid.dumps(links)
 
 
 def delete_all(session) -> None:
@@ -40,8 +41,12 @@ def main(option: str) -> None:
             delete_all(session)
         elif option == Option.DUMP:
             dump(session, chart_id)
-        else:
+        elif option == Option.TEST_DATA:
             create_testdata(session, chart_id)
+        else:
+            input_data = sys.stdin.read()
+            links = Mermaid.loads(chart_id, input_data.split("\n"))
+            print(links)
 
 
 if __name__ == "__main__":
