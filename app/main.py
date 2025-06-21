@@ -8,15 +8,10 @@ from app.models import Node, Link
 
 class Option(StrEnum):
     DELETE_ALL = "delete-all"
+    SELECT = "select"
 
 
-def delete_all() -> None:
-    with GraphSession() as session:
-        Repo.delete_all(session)
-
-
-def create_testdata() -> None:
-    mermaid_id = 1
+def create_testdata(session, mermaid_id: int) -> None:
     nodes = {
         "A": Node(mermaid_id=mermaid_id, name="A", display_name="Node A"),
         "B": Node(mermaid_id=mermaid_id, name="B", display_name="Node B"),
@@ -24,17 +19,28 @@ def create_testdata() -> None:
     links = [
         Link(from_=nodes["A"], to=nodes["B"]),
     ]
-    with GraphSession() as session:
-        Repo.create_nodes(session, list(nodes.values()))
-        Repo.create_links(session, links)
-    print("Nodes created!")
+    Repo.create_nodes(session, list(nodes.values()))
+    Repo.create_links(session, links)
+
+
+def select(session, mermaid_id: int) -> None:
+    result = Repo.select(session, mermaid_id)
+    print(result)
+
+
+def delete(session) -> None:
+    Repo.delete_all(session)
 
 
 def main(option: str) -> None:
-    if option == Option.DELETE_ALL:
-        delete_all()
-        return
-    create_testdata()
+    mermaid_id = 1
+    with GraphSession() as session:
+        if option == Option.DELETE_ALL:
+            delete(session)
+        if option == Option.SELECT:
+            select(session, mermaid_id)
+        else:
+            create_testdata(session, mermaid_id)
 
 
 if __name__ == "__main__":

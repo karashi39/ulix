@@ -59,3 +59,13 @@ class Repository:
     def delete_all(cls, session) -> None:
         query = "MATCH (n) DETACH DELETE n"
         session.run(query)
+
+    @classmethod
+    def select(cls, session, mermaid_id: int) -> list[Link]:
+        query = """
+        MATCH (n)-[r]->(m)
+        WHERE n.mermaid_id = $mermaid_id
+        RETURN n, r, m
+        """
+        result = session.run(query, mermaid_id=mermaid_id)
+        return [Link.from_neo4j(record["r"]) for record in result]
