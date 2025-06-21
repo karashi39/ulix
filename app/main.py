@@ -1,5 +1,5 @@
-import sys
 from enum import StrEnum
+import sys
 
 from app.repositories import delete_all, create_links, create_nodes
 from app.graphdb import GraphSession
