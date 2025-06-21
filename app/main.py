@@ -4,11 +4,12 @@ import sys
 from app.repository import Repository as Repo
 from app.graphdb import GraphSession
 from app.models import Node, Link
+from app.mermaid import Mermaid
 
 
 class Option(StrEnum):
     DELETE_ALL = "delete-all"
-    SELECT = "select"
+    DUMP = "dump"
 
 
 def create_testdata(session, chart_id: int) -> None:
@@ -23,9 +24,9 @@ def create_testdata(session, chart_id: int) -> None:
     Repo.create_links(session, links)
 
 
-def select(session, chart_id: int) -> None:
-    result = Repo.select(session, chart_id)
-    print(result)
+def dump(session, chart_id: int) -> None:
+    links = Repo.select(session, chart_id)
+    Mermaid.dump(links)
 
 
 def delete_all(session) -> None:
@@ -37,8 +38,8 @@ def main(option: str) -> None:
     with GraphSession() as session:
         if option == Option.DELETE_ALL:
             delete_all(session)
-        elif option == Option.SELECT:
-            select(session, chart_id)
+        elif option == Option.DUMP:
+            dump(session, chart_id)
         else:
             create_testdata(session, chart_id)
 

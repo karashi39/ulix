@@ -23,6 +23,14 @@ class Node(BaseModel):
             display_name=neo_node["name"],
         )
 
+    def __hash__(self):
+        return hash((self.name, self.chart_id))
+
+    def __eq__(self, other):
+        if isinstance(other, Node):
+            return self.name == other.name and self.chart_id == other.chart_id
+        return False
+
 
 class LinkType(StrEnum):
     LINK = "LINK"
