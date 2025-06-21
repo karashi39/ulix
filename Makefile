@@ -4,7 +4,7 @@ run:
 gui:
 	open http://localhost:7474
 
-cmd:
+cmd: # to import mermaid code, run `cat sample.maermaid | make cmd`
 	@PYTHONPATH=. uv run python app/main.py ${ARG}
 
 format:

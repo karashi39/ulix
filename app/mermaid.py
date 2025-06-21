@@ -4,6 +4,8 @@ from enum import StrEnum, Enum
 
 HEADER = "flowchart LR"
 
+COMMENT_LITERAL = "%%"
+
 
 class Arrow(StrEnum):
     LINK = "-->"
@@ -22,7 +24,7 @@ def contains_arrow(line: str) -> bool:
 
 def format_node(node: Node) -> str:
     if node.name != node.display_name:
-        return f"{node.name}({node.display_name})"
+        return f'{node.name}("{node.display_name}")'
     return node.name
 
 
@@ -38,8 +40,8 @@ def get_node_params(node_text: str) -> tuple:
     ptype = None
     for paren in Paren:
         if paren.value[0] in text:
-            name = text.split(paren.value[0])[0].strip()
-            dname = text.split(paren.value[0])[1].replace(paren.value[1], "").strip()
+            name = text.split(paren.value[0])[0].replace('"', "").strip()
+            dname = text.replace(name, "").replace('"', "").strip()[:-1][1:]
             ptype = paren.name
             break
     node_text.split("(")
@@ -56,24 +58,33 @@ class Mermaid:
                 continue
             if HEADER in line:
                 continue
+            if COMMENT_LITERAL in line:
+                continue
             if contains_arrow(line):
                 part = reduce_space(line).split(" ")
                 f_name, f_dname, f_ptype = get_node_params(part[0])
                 t_name, t_dname, t_ptype = get_node_params(part[2])
                 links.append((f_name, t_name))
-                name_to_dname[t_name] = t_dname
-                name_to_dname[f_name] = f_dname
+                if t_name != t_dname:
+                    name_to_dname[t_name] = t_dname
+                if f_name != f_dname:
+                    name_to_dname[f_name] = f_dname
             else:
                 name, dname, ptype = get_node_params(line)
-                name_to_dname[name] = dname
+                if name != dname:
+                    name_to_dname[name] = dname
 
         return [
             Link(
                 from_=Node(
-                    chart_id=chart_id, name=link[0], display_name=name_to_dname[link[0]]
+                    chart_id=chart_id,
+                    name=link[0],
+                    display_name=name_to_dname.get(link[0], link[0]),
                 ),
                 to=Node(
-                    chart_id=chart_id, name=link[1], display_name=name_to_dname[link[1]]
+                    chart_id=chart_id,
+                    name=link[1],
+                    display_name=name_to_dname.get(link[1], link[1]),
                 ),
             )
             for link in links
