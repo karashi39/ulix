@@ -34,6 +34,22 @@ def delete_all(session) -> None:
     Repo.delete_all(session)
 
 
+def bulk_insert(session, chart_id: int, links: list[Link]) -> None:
+    seen = set()
+    for link in links:
+        from_ = link.from_
+        to = link.to
+        if from_ not in seen:
+            Repo.create_node(session, from_)
+        else:
+            seen.add(from_)
+        if to not in seen:
+            Repo.create_node(session, to)
+        else:
+            seen.add(to)
+        Repo.create_link(session, link)
+
+
 def main(option: str) -> None:
     chart_id = 1
     with GraphSession() as session:
@@ -46,7 +62,7 @@ def main(option: str) -> None:
         else:
             input_data = sys.stdin.read()
             links = Mermaid.loads(chart_id, input_data.split("\n"))
-            print(links)
+            bulk_insert(session, chart_id, links)
 
 
 if __name__ == "__main__":
