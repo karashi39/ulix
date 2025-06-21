@@ -16,12 +16,14 @@ class Node(BaseModel):
 
 class LinkType(StrEnum):
     LINK = "LINK"
+    DOT = "DOT"
+    BOLD = "BOLD"
 
 
 class Link(BaseModel):
     from_: Node
     to: Node
-    link_type: LinkType = LinkType.LINK
+    type_: LinkType = LinkType.LINK
     label: str | None = None
 
     @model_validator(mode="after")

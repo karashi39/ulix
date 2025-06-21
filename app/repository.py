@@ -30,18 +30,19 @@ class Repository:
 
     @classmethod
     def create_link(cls, session, link: Link) -> Neo4jLink:
-        query = """
-        MATCH (a:Node {node_name: $from_node, mermaid_id: $mermaid_id})
-        MATCH (b:Node {node_name: $to_node, mermaid_id: $mermaid_id})
-        MERGE (a)-[r:LINK]->(b)
-        SET r.label = $label
-        RETURN r
-        """
+        query = (
+            "MATCH (a:Node {node_name: $from_node, mermaid_id: $mermaid_id})"
+            " MATCH (b:Node {node_name: $to_node, mermaid_id: $mermaid_id})"
+            f" MERGE (a)-[r:{link.type_}]->(b)"
+            " SET r.label = $label, r.link_type = $link_type"
+            " RETURN r"
+        )
         result = session.run(
             query,
             from_node=link.from_.name,
             to_node=link.to.name,
             mermaid_id=link.to.mermaid_id,
+            link_type=link.type_,
             label=link.label,
         )
         return result.single()
