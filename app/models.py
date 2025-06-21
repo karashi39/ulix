@@ -5,7 +5,7 @@ from enum import StrEnum
 
 
 class Node(BaseModel):
-    mermaid_id: int
+    chart_id: int
     name: str
     display_name: str | None = None
 
@@ -18,7 +18,7 @@ class Node(BaseModel):
     @classmethod
     def from_neo4j(cls, neo_node: Neo4jNode):
         return cls(
-            mermaid_id=neo_node["mermaid_id"],
+            chart_id=neo_node["chart_id"],
             name=neo_node["node_name"],
             display_name=neo_node["name"],
         )
@@ -37,10 +37,10 @@ class Link(BaseModel):
     label: str | None = None
 
     @model_validator(mode="after")
-    def check_mermaid_id_match(self) -> "Link":
-        if self.from_.mermaid_id == self.to.mermaid_id:
+    def check_chart_id_match(self) -> "Link":
+        if self.from_.chart_id == self.to.chart_id:
             return self
-        raise ValueError("from_node and to_node must have the same mermaid_id")
+        raise ValueError("from_node and to_node must have the same chart_id")
 
     @classmethod
     def from_neo4j(cls, neo_link: Neo4jLink):

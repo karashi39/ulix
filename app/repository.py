@@ -8,7 +8,7 @@ class Repository:
     @classmethod
     def create_node(cls, session, node: Node) -> Neo4jNode:
         query = """
-        MERGE (n:Node {node_name: $node_name, mermaid_id: $mermaid_id})
+        MERGE (n:Node {node_name: $node_name, chart_id: $chart_id})
         SET n.name = $display_name
         RETURN n
         """
@@ -16,7 +16,7 @@ class Repository:
             query,
             node_name=node.name,
             display_name=node.display_name,
-            mermaid_id=node.mermaid_id,
+            chart_id=node.chart_id,
         )
         return result.single()
 
@@ -31,8 +31,8 @@ class Repository:
     @classmethod
     def create_link(cls, session, link: Link) -> Neo4jLink:
         query = (
-            "MATCH (a:Node {node_name: $from_node, mermaid_id: $mermaid_id})"
-            " MATCH (b:Node {node_name: $to_node, mermaid_id: $mermaid_id})"
+            "MATCH (a:Node {node_name: $from_node, chart_id: $chart_id})"
+            " MATCH (b:Node {node_name: $to_node, chart_id: $chart_id})"
             f" MERGE (a)-[r:{link.type_}]->(b)"
             " SET r.label = $label, r.link_type = $link_type"
             " RETURN r"
@@ -41,7 +41,7 @@ class Repository:
             query,
             from_node=link.from_.name,
             to_node=link.to.name,
-            mermaid_id=link.to.mermaid_id,
+            chart_id=link.to.chart_id,
             link_type=link.type_,
             label=link.label,
         )
@@ -61,11 +61,11 @@ class Repository:
         session.run(query)
 
     @classmethod
-    def select(cls, session, mermaid_id: int) -> list[Link]:
+    def select(cls, session, chart_id: int) -> list[Link]:
         query = """
         MATCH (n)-[r]->(m)
-        WHERE n.mermaid_id = $mermaid_id
+        WHERE n.chart_id = $chart_id
         RETURN n, r, m
         """
-        result = session.run(query, mermaid_id=mermaid_id)
+        result = session.run(query, chart_id=chart_id)
         return [Link.from_neo4j(record["r"]) for record in result]

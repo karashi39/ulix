@@ -11,10 +11,10 @@ class Option(StrEnum):
     SELECT = "select"
 
 
-def create_testdata(session, mermaid_id: int) -> None:
+def create_testdata(session, chart_id: int) -> None:
     nodes = {
-        "A": Node(mermaid_id=mermaid_id, name="A", display_name="Node A"),
-        "B": Node(mermaid_id=mermaid_id, name="B", display_name="Node B"),
+        "A": Node(chart_id=chart_id, name="A", display_name="Node A"),
+        "B": Node(chart_id=chart_id, name="B", display_name="Node B"),
     }
     links = [
         Link(from_=nodes["A"], to=nodes["B"]),
@@ -23,24 +23,24 @@ def create_testdata(session, mermaid_id: int) -> None:
     Repo.create_links(session, links)
 
 
-def select(session, mermaid_id: int) -> None:
-    result = Repo.select(session, mermaid_id)
+def select(session, chart_id: int) -> None:
+    result = Repo.select(session, chart_id)
     print(result)
 
 
-def delete(session) -> None:
+def delete_all(session) -> None:
     Repo.delete_all(session)
 
 
 def main(option: str) -> None:
-    mermaid_id = 1
+    chart_id = 1
     with GraphSession() as session:
         if option == Option.DELETE_ALL:
-            delete(session)
-        if option == Option.SELECT:
-            select(session, mermaid_id)
+            delete_all(session)
+        elif option == Option.SELECT:
+            select(session, chart_id)
         else:
-            create_testdata(session, mermaid_id)
+            create_testdata(session, chart_id)
 
 
 if __name__ == "__main__":
