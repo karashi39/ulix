@@ -2,7 +2,7 @@ import sys
 from enum import StrEnum
 
 from app.repositories import delete_all, create_link, create_node
-from app.graphdb import exec_cypher
+from app.graphdb import GraphSession
 from app.models import Node, Link
 
 
@@ -12,7 +12,8 @@ class Option(StrEnum):
 
 def main(option: str) -> None:
     if option == Option.DELETE_ALL:
-        exec_cypher(delete_all)
+        with GraphSession() as session:
+            delete_all(session)
         return
 
     mermaid_id = 1
@@ -23,10 +24,11 @@ def main(option: str) -> None:
     links = [
         Link(from_=nodes["A"], to=nodes["B"]),
     ]
-    for node in nodes.values():
-        exec_cypher(create_node, node)
-    for link in links:
-        exec_cypher(create_link, link)
+    with GraphSession() as session:
+        for node in nodes.values():
+            create_node(session, node)
+        for link in links:
+            create_link(session, link)
     print("Nodes created!")
 
 
