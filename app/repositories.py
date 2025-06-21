@@ -15,6 +15,14 @@ def create_node(session, node: Node):
     return result.single()
 
 
+def create_nodes(session, nodes: list[Node]):
+    result = []
+    for node in nodes:
+        ret = create_node(session, node)
+        result.append(ret)
+    return result
+
+
 def create_link(session, link: Link):
     query = """
     MATCH (a:Node {node_name: $from_node, mermaid_id: $mermaid_id})
@@ -31,6 +39,14 @@ def create_link(session, link: Link):
         label=link.label,
     )
     return result.single()
+
+
+def create_links(session, links: list[Link]):
+    result = []
+    for link in links:
+        ret = create_link(session, link)
+        result.append(ret)
+    return result
 
 
 def delete_all(session):

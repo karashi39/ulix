@@ -1,7 +1,7 @@
 import sys
 from enum import StrEnum
 
-from app.repositories import delete_all, create_link, create_node
+from app.repositories import delete_all, create_links, create_nodes
 from app.graphdb import GraphSession
 from app.models import Node, Link
 
@@ -25,10 +25,8 @@ def main(option: str) -> None:
         Link(from_=nodes["A"], to=nodes["B"]),
     ]
     with GraphSession() as session:
-        for node in nodes.values():
-            create_node(session, node)
-        for link in links:
-            create_link(session, link)
+        create_nodes(session, list(nodes.values()))
+        create_links(session, links)
     print("Nodes created!")
 
 
