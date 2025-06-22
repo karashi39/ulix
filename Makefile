@@ -1,3 +1,6 @@
+install:
+	uv sync
+
 run:
 	docker compose up
 
