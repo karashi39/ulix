@@ -18,7 +18,9 @@ def dumps(links: list[Link]) -> str:
     for link in links:
         nodes.add(link.from_)
         nodes.add(link.to)
-        arrow = Arrow[link.type_]
+        arrow = Arrow[link.type_].value
+        if link.label:
+            arrow += f'|"{link.label}"|'
         link_line = f"{link.from_.name} {arrow} {link.to.name}"
         chart_text.append(link_line)
 
