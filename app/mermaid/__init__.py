@@ -35,7 +35,6 @@ def contains_arrow(line: str) -> bool:
 
 
 def get_arrow_label(arrow_part: str) -> str | None:
-    print(arrow_part)
     if "|" not in arrow_part:
         return None
     pattern = r"\|(.*?)\|"
