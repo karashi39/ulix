@@ -34,14 +34,34 @@ def contains_arrow(line: str) -> bool:
     return any(arrow.value in line for arrow in Arrow)
 
 
+def get_arrow_label(arrow_part: str) -> str | None:
+    print(arrow_part)
+    if "|" not in arrow_part:
+        return None
+    pattern = r"\|(.*?)\|"
+    match = re.search(pattern, arrow_part)
+    if not match:
+        return None
+    return strip_quotes(match.group(1))
+
+
 def format_node(node: Node) -> str:
     if node.name != node.display_name:
         return f'{node.name}("{node.display_name}")'
     return node.name
 
 
+def strip_quotes(s: str) -> str:
+    if len(s) >= 2 and s[0] == s[-1] == '"':
+        return s[1:-1]
+    if len(s) >= 2 and s[0] == s[-1] == "'":
+        return s[1:-1]
+    return s
+
+
 def reduce_space(line: str) -> str:
-    return re.sub(r"\s+", " ", line.strip())
+    pattern = r"\s+"
+    return re.sub(pattern, " ", line.strip())
 
 
 def get_node_params(node_text: str) -> tuple:
@@ -75,8 +95,9 @@ class Mermaid:
             if contains_arrow(line):
                 part = reduce_space(line).split(" ")
                 f_name, f_dname, f_ptype = get_node_params(part[0])
+                label = get_arrow_label(part[1])
                 t_name, t_dname, t_ptype = get_node_params(part[2])
-                links.append((f_name, t_name))
+                links.append((f_name, t_name, label))
                 if t_name != t_dname:
                     name_to_dname[t_name] = t_dname
                 if f_name != f_dname:
@@ -98,6 +119,7 @@ class Mermaid:
                     name=link[1],
                     display_name=name_to_dname.get(link[1], link[1]),
                 ),
+                label=link[2],
             )
             for link in links
         ]

@@ -37,6 +37,7 @@ class Repository:
             " SET r.label = $label, r.link_type = $link_type"
             " RETURN r"
         )
+        print(link)
         result = session.run(
             query,
             from_node=link.from_.name,
