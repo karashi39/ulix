@@ -27,7 +27,8 @@ def create_testdata(session, chart_id: int) -> None:
 
 def dump(session, chart_id: int) -> None:
     links = Repo.select(session, chart_id)
-    Mermaid.dumps(links)
+    chart_text = Mermaid.dumps(links)
+    print(chart_text)
 
 
 def delete_all(session) -> None:

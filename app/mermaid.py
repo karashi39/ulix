@@ -2,9 +2,17 @@ from app.models import Node, Link
 import re
 from enum import StrEnum, Enum
 
-HEADER = "flowchart LR"
+_HEADER = "flowchart "
 
 COMMENT_LITERAL = "%%"
+
+
+class Header(StrEnum):
+    LR = _HEADER + "LR"
+    RL = _HEADER + "RL"
+    TD = _HEADER + "TD"
+    TB = _HEADER + "TB"
+    BT = _HEADER + "BT"
 
 
 class Arrow(StrEnum):
@@ -16,6 +24,10 @@ class Arrow(StrEnum):
 class Paren(Enum):
     PAREN = ("(", ")")
     BRACKET = ("[", "]")
+
+
+def is_header(line: str) -> bool:
+    return any(header.value in line for header in Header)
 
 
 def contains_arrow(line: str) -> bool:
@@ -56,7 +68,7 @@ class Mermaid:
         for line in lines:
             if not line:
                 continue
-            if HEADER in line:
+            if is_header(line):
                 continue
             if COMMENT_LITERAL in line:
                 continue
@@ -91,18 +103,22 @@ class Mermaid:
         ]
 
     @classmethod
-    def dumps(cls, links: list[Link]) -> None:
+    def dumps(cls, links: list[Link]) -> str:
+        chart_text = ""
         if not links:
-            return
-        print(HEADER)
+            return chart_text
+
+        chart_text += Header.LR
         nodes = set()
         for link in links:
             nodes.add(link.from_)
             nodes.add(link.to)
             arrow = Arrow[link.type_]
             link_line = f"{link.from_.name} {arrow} {link.to.name}"
-            print(link_line)
+            chart_text += link_line
 
         for node in nodes:
             node_line = format_node(node)
-            print(node_line)
+            chart_text += node_line
+
+        return chart_text
